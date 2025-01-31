@@ -12,24 +12,31 @@ export const createChatRoom = async (name: string, userIds: number[]) => {
     },
   });
 };
-export const getAllChatRooms = async (userid:number) => {
-  const chatRooms= await prisma.chatRoom.findMany({
-    include: { users: true, messages: { include: { sender: true } } },
+export const getAllChatRooms = async (userid: number) => {
+  // Fetch all chat rooms with their users and messages
+  const chatRooms = await prisma.chatRoom.findMany({
+    include: {
+      users: true, // Include users in the chat room
+      messages: { include: { sender: true } }, // Include messages and their senders
+    },
   });
+
   if (!chatRooms) {
-    throw new Error('Chat room not found');
+    throw new Error('No chat rooms found');
   }
 
-  const userChatRooms = chatRooms.filter((chatRoom) => 
+  // Filter chat rooms where the user is a member
+  const userChatRooms = chatRooms.filter((chatRoom) =>
     chatRoom.users.some((user) => user.id === userid)
   );
 
-  const isMember = userChatRooms.length > 0;
-  if (!isMember) {
+  // Check if the user is a member of any chat room
+  if (userChatRooms.length === 0) {
     throw new Error('You are not a member of any chat room');
   }
 
-  return chatRooms;
+  // Return only the chat rooms where the user is a member
+  return userChatRooms;
 };
 
 export const getChatRoomById = async (roomId: number, userid:number) => {

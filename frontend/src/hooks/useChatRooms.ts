@@ -4,12 +4,16 @@
 import { useState, useEffect } from 'react';
 import { ChatRoom } from '../models/ChatRoom';
 import { useAuth } from './useAuth';
+import { Message } from '@/models/Message';
+import { User } from '@/models/User';
 
 
 
 
 export const useChatRooms = () => {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+  const[messages,setMessages] = useState<Message[]>([]);
+  const[users,setUsers] = useState<User[]>([]);
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,51 +35,73 @@ export const useChatRooms = () => {
         },
         body: JSON.stringify({ name, userIds }),
       });
-      const responseText = await response.text(); // Read response as text first
+  
+      // Read the response as text first
+      const responseText = await response.text();
       console.log("Raw response:", responseText); // Debugging output
-
+  
       if (!response.ok) {
         console.error(`Error creating chat room, status: ${response.status}`);
         throw new Error(`Failed to create chat room: ${response.status}`);
       }
-
-      const data = await response.json();
-      console.log('Backend Response:', data); // Log the backend response
-      if (!response.ok) {
-        throw new Error('Failed to create chat room');
-      }
   
-      
       // Check if response is JSON before parsing
-    const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      const data = JSON.parse(responseText);
-      console.log("Backend Response:", data);
-      setChatRooms((prevChatRooms) => [...prevChatRooms, data.data]);
-    } else {
-      console.error("Unexpected response format:", responseText);
-    }
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = JSON.parse(responseText);
+        console.log("Backend Response:", data);
+  
+        // Update the chat rooms state
+        setChatRooms((prevChatRooms) => [...prevChatRooms, data.data]);
+      } else {
+        console.error("Unexpected response format:", responseText);
+      }
     } catch (error) {
       console.error('Error creating chat room:', error);
     }
   };
 
-  const fetchChatRoom = async (id: string) => {
-    const response = await fetch(`/api/chat-room/${id}`,{
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-  
+
+const fetchChatRoom = async (id: string) => {
+  if (!token) {
+    console.error('Token is missing');
+    return null;
+  }
+
+  try {
+    const response = await fetch(`/api/chat-room/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
     });
+
+    if (!response.ok) {
+      setIsLoading(true)
+      throw new Error(`Failed to fetch chat room: ${response.status}`);
+    }
+    setIsLoading(false)
     const data = await response.json();
-    return data.chatRoom;
-  };
+    const messages= data.data.messages;
+    const users = data.data.users;
+    setMessages(messages||[]);
+    setUsers(users||[]);
+
+    return data; // Return the entire data object
+  } catch (error) {
+    console.error('Error fetching chat room:', error);
+    return null;
+  }
+};
 
   const fetchChatRooms = async () => {
     try {
 
       const response = await fetch('/api/chat-room',{
+        method: 'GET',
         headers: {
+          'Content-Type': 'application/json',
              'Authorization': `Bearer ${token}`,        },
       });
       const result = await response.json(); // Extract the response
@@ -95,7 +121,7 @@ export const useChatRooms = () => {
     }
   }, [token]);
 
-  return { isLoading,chatRooms, createChatRoom, fetchChatRoom };
+  return { isLoading,messages,users,chatRooms, createChatRoom, fetchChatRoom };
 };
 
 

@@ -3,12 +3,14 @@
 import React, { useState } from 'react';
 import {useChatRooms} from '@/hooks/useChatRooms';
 import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 const CreateForm = () => {
   const [roomName, setRoomName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const { createChatRoom } = useChatRooms();
   const { user } = useAuth();
+  const router = useRouter();
 
   // Replace this with actual user fetching logic
   
@@ -18,7 +20,7 @@ const CreateForm = () => {
     e.preventDefault();
     try {
       await createChatRoom(roomName, [1]); // '1' هو ID المستخدم (يمكن استبداله بـ user.id من الـ AuthContext)
-
+      router.push('/chat-room');
     } catch (error) {
       console.error(error);
     }
