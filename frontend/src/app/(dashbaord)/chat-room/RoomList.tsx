@@ -21,7 +21,9 @@ const RoomList = () => {
   };
 
   if (isLoading) {
-    return <p>Loading chat rooms...</p>;
+    return <div className="flex items-center justify-center min-h-screen">
+    <p className="text-xl font-semibold">Loading chat rooms...</p>
+  </div>;
   }
 
   return (

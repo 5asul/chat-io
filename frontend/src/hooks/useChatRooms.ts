@@ -101,6 +101,7 @@ const fetchChatRoom = async (id: string) => {
 
   const fetchChatRooms = async () => {
     try {
+      setIsLoading(true); // Set loading to true
 
       const response = await fetch('/api/chat-room',{
         method: 'GET',
