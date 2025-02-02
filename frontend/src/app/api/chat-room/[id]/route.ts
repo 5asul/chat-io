@@ -33,3 +33,4 @@ export async function GET(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: 'Chat room not found' }, { status: 404 });
   }
 }
+

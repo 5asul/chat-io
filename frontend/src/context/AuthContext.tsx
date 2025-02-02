@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { User } from "../models/User";
+import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   logError: string | null;
@@ -18,6 +19,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [logError, setLogError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   // Use useEffect to initialize state from localStorage after the component mounts
   useEffect(() => {
@@ -95,6 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    router.push("/login");
   };
 
   return (

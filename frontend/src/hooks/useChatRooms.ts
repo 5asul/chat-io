@@ -15,6 +15,7 @@ export const useChatRooms = () => {
   const[messages,setMessages] = useState<Message[]>([]);
   const[users,setUsers] = useState<User[]>([]);
   const { token } = useAuth();
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   
@@ -121,7 +122,39 @@ const fetchChatRoom = async (id: string) => {
     }
   }, [token]);
 
-  return { isLoading,messages,users,chatRooms, createChatRoom, fetchChatRoom };
+  const deleteChatRoom = async (id: string) => {
+    setIsLoading(true);
+    setError(null);
+    if (!token) {
+      console.error('Token is missing');
+      return null;
+    }
+
+    try {
+      const response = await fetch(`/api/chat-room/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to delete chat room');
+      }
+
+      return result; // Return the result for further handling
+    } catch (error) {
+      console.error('Error deleting chat room:', error);
+      setError(error instanceof Error ? error.message : 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { error,deleteChatRoom,isLoading,messages,users,chatRooms, createChatRoom, fetchChatRoom };
 };
 
 

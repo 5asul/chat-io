@@ -1,3 +1,4 @@
+"use client"
 import { useChatRooms } from '@/hooks/useChatRooms';
 import React, { useEffect } from 'react'
 
@@ -12,7 +13,7 @@ function SideBar({ roomId }: { roomId: string }) {
   
     })
   return (
-    
+     
         <aside className="w-1/4 bg-white p-6 rounded-lg shadow-lg flex flex-col">
           <h2 className="text-xl font-semibold mb-4">Users</h2>
           <div className='space-y-4'>

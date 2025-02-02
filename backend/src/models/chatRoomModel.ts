@@ -55,3 +55,28 @@ export const getChatRoomById = async (roomId: number, userid:number) => {
 
   return chatRoom;
 };
+
+export const deleteChatRoom = async (roomId: number, userId: number) => {
+  // Check if the chat room exists
+  const chatRoom = await prisma.chatRoom.findUnique({
+    where: { id: roomId },
+    include: { users: true },
+  });
+
+  if (!chatRoom) {
+    throw new Error('Chat room not found');
+  }
+
+  // Check if the user is a member of the chat room
+  const isMember = chatRoom.users.some((user) => user.id === userId);
+  if (!isMember) {
+    throw new Error('You are not a member of this chat room');
+  }
+
+  // Delete the chat room
+  const deletedRoom = await prisma.chatRoom.delete({
+    where: { id: roomId },
+  });
+
+  return deletedRoom;
+};

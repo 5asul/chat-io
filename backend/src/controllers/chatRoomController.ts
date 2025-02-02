@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createRoom, getRoom } from '../services/chatRoomService';
+import { createRoom, deleteRoom, getRoom } from '../services/chatRoomService';
 import {HTTP_STATUS} from '../constants/statusCodes';
 import { getAllRooms } from '../services/chatRoomService';
 
@@ -38,3 +38,14 @@ export const getAll = async (req: Request, res: Response) => {
     res.status(HTTP_STATUS.BAD_REQUEST).json({ error: error.message });
   }
 };
+
+export const deleteById = async (req: Request, res: Response)=>{
+  const { roomId } = req.params;
+  const userId = (req as any).user.userId;
+  try {
+    await deleteRoom(Number(roomId), userId);
+    res.status(HTTP_STATUS.NO_CONTENT).json({ message: 'Chat room deleted' });
+  } catch (error: any) {
+    res.status(HTTP_STATUS.BAD_REQUEST).json({ error: error.message });
+  }
+}
