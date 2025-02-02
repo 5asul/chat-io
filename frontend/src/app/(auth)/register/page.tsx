@@ -8,7 +8,7 @@ function Register() {
   const[username,setUsername]=useState('')
   const[email,setEmail]=useState('')
   const[password,setPassword]=useState('')
-   const [error, setError] = useState<string | null>(null);
+   const [, setError] = useState<string | null>(null);
   
   const { register } = useAuth();
   const router = useRouter();
@@ -24,8 +24,8 @@ function Register() {
      }
    };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div className="  flex items-center justify-center bg-gray-100">
+      <div className="bg-white mt-16  p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

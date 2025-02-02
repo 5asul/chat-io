@@ -43,13 +43,16 @@ const RoomList = () => {
                 </div>
               
             </Link>
+            <div >
             <button
               onClick={() => handleDelete(room.id)}
-              className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+              className="absolute top-2 right-2 rounded-full bg-slate-200 hover:bg-slate-400 p-2 text-red-500 hover:text-red-700"
               disabled={deleting === room.id}
             >
-              <FaTrash />
+              <FaTrash  />
             </button>
+            </div>
+            
           </div>
         ))}
       </div>

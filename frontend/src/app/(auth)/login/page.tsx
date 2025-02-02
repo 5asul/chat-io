@@ -8,8 +8,8 @@ import React, { useState } from 'react';
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth();
+  const [, setError] = useState<string | null>(null);
+  const { login,logError } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -17,14 +17,16 @@ const LoginForm = () => {
     setError(null);
     try {
       await login(email, password);
+      setError(logError);
       router.push('/');
     } catch (err) {
       setError((err as Error).message || 'Login failed' );
+      
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-8 bg-white shadow-lg rounded-lg">
+    <form onSubmit={handleSubmit} className="max-w-md m-32 mx-auto p-8 bg-white shadow-lg rounded-lg">
       <h2 className="text-3xl font-semibold mb-6 text-center">Login</h2>
       
       <div className="mb-4">

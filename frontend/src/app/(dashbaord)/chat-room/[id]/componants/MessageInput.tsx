@@ -18,7 +18,7 @@ function MessageInput({ roomId }: { roomId: string }) {
   
   return (
     <main>
-      <div className="mt-52">
+      <div >
         <h2 className="text-xl font-semibold mb-4">Message...</h2>
         <div className="flex items-center space-x-4">
           <input
