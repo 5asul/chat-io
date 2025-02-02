@@ -2,14 +2,16 @@
 
 import React, { useState } from 'react';
 import {useChatRooms} from '@/hooks/useChatRooms';
-import { useAuth } from '@/hooks/useAuth';
+
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 const CreateForm = () => {
   const [roomName, setRoomName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const { createChatRoom } = useChatRooms();
-  const { user } = useAuth();
+  const {user}=useAuth();
+  const { allUsers } = useChatRooms();
   const router = useRouter();
 
   // Replace this with actual user fetching logic
@@ -19,7 +21,7 @@ const CreateForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createChatRoom(roomName, [1]); // '1' هو ID المستخدم (يمكن استبداله بـ user.id من الـ AuthContext)
+      await createChatRoom(roomName, selectedUsers); // '1' هو ID المستخدم (يمكن استبداله بـ user.id من الـ AuthContext)
       router.push('/chat-room');
     } catch (error) {
       console.error(error);
@@ -52,13 +54,15 @@ const CreateForm = () => {
           id="users"
           multiple
           value={selectedUsers.map(String)}
-          onChange={(e) => setSelectedUsers(Array.from(e.target.selectedOptions, option => Number(option.value)))}
+          onChange={(e) => setSelectedUsers(Array.from(e.target.selectedOptions, option => Number(option.value)+Number(user?.id)))}
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         >
           
-            <option key={user?.id} value={user?.id}>
-              {user?.username}
+           {allUsers.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.username}
             </option>
+           ))}
           
         </select>
       </div>

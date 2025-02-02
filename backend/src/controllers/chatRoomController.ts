@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { createRoom, deleteRoom, getRoom } from '../services/chatRoomService';
+import { createRoom, deleteRoom, getAllUsers, getRoom } from '../services/chatRoomService';
 import {HTTP_STATUS} from '../constants/statusCodes';
 import { getAllRooms } from '../services/chatRoomService';
 
-export const create = async (req: Request, res: Response) => {
+export const createController = async (req: Request, res: Response) => {
   const { name, userIds } = req.body;
   const userId = (req as any).user.userId; // Use the authenticated user's ID
   
@@ -17,7 +17,7 @@ export const create = async (req: Request, res: Response) => {
   }
 };
 
-export const getById = async (req: Request, res: Response) => {
+export const getByIdController = async (req: Request, res: Response) => {
   const { roomId } = req.params;
   const userId = (req as any).user.userId;
   try {
@@ -29,7 +29,7 @@ export const getById = async (req: Request, res: Response) => {
 };
 
 
-export const getAll = async (req: Request, res: Response) => {
+export const getAllController = async (req: Request, res: Response) => {
   const userId = (req as any).user.userId;
   try {
     const rooms = await getAllRooms(userId);
@@ -39,7 +39,16 @@ export const getAll = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteById = async (req: Request, res: Response)=>{
+export const getAllUsersController= async (req: Request, res: Response) => {
+  const userId = (req as any).user.userId;
+  try {
+    const users = await getAllUsers(userId);
+    res.status(HTTP_STATUS.OK).json({ data: users });
+  } catch (error: any) {
+    res.status(HTTP_STATUS.BAD_REQUEST).json({ error: error.message });
+  }
+};
+export const deleteByIdController = async (req: Request, res: Response)=>{
   const { roomId } = req.params;
   const userId = (req as any).user.userId;
   try {

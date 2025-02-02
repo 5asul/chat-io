@@ -1,6 +1,6 @@
 import prisma from '../config/db';
 
-export const createChatRoom = async (name: string, userIds: number[]) => {
+export const createChatRoomModel = async (name: string, userIds: number[]) => {
   return prisma.chatRoom.create({
     data: {
       name,
@@ -12,7 +12,7 @@ export const createChatRoom = async (name: string, userIds: number[]) => {
     },
   });
 };
-export const getAllChatRooms = async (userid: number) => {
+export const getAllChatRoomsModel = async (userid: number) => {
   // Fetch all chat rooms with their users and messages
   const chatRooms = await prisma.chatRoom.findMany({
     include: {
@@ -39,7 +39,7 @@ export const getAllChatRooms = async (userid: number) => {
   return userChatRooms;
 };
 
-export const getChatRoomById = async (roomId: number, userid:number) => {
+export const getChatRoomByIdModel = async (roomId: number, userid:number) => {
   const chatRoom = await prisma.chatRoom.findUnique({
     where: { id: roomId },
     include: { users: true, messages: { include: { sender: true } } },
@@ -56,7 +56,7 @@ export const getChatRoomById = async (roomId: number, userid:number) => {
   return chatRoom;
 };
 
-export const deleteChatRoom = async (roomId: number, userId: number) => {
+export const deleteChatRoomModel = async (roomId: number, userId: number) => {
   // Check if the chat room exists
   const chatRoom = await prisma.chatRoom.findUnique({
     where: { id: roomId },
@@ -79,4 +79,21 @@ export const deleteChatRoom = async (roomId: number, userId: number) => {
   });
 
   return deletedRoom;
+};
+
+export const getAllUsersModel = async (userId: number) => {
+  // Fetch all users
+  const users = await prisma.user.findMany({
+    where: { NOT: { id: userId } }, // Exclude the authenticated user
+    select: {
+      id: true,
+      username: true, // Select only the username and id
+    },
+  });
+
+  if (!users) {
+    throw new Error('No users found');
+  }
+
+  return users;
 };

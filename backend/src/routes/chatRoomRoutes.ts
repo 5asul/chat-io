@@ -1,12 +1,14 @@
 import express from 'express';
-import { create, getById, getAll, deleteById } from '../controllers/chatRoomController';
+import { createController, getByIdController, getAllController, deleteByIdController,getAllUsersController } from '../controllers/chatRoomController';
 import { authenticate } from '../middlewares/authMiddleware';
 
 const router = express.Router();
 
-router.post('/create',authenticate, create);
-router.delete('/delete/:roomId', authenticate,deleteById);
-router.get('/:roomId',authenticate, getById);
-router.all('/',authenticate,getAll)
+router.post('/create',authenticate, createController);
+router.delete('/delete/:roomId', authenticate,deleteByIdController);
+router.all('/getUsers', authenticate,getAllUsersController);
+router.get('/:roomId',authenticate, getByIdController);
+router.all('/',authenticate,getAllController)
+
 
 export default router;

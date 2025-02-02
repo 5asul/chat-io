@@ -2,23 +2,27 @@
 "use client";
 
 import { useAuth } from '@/hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useEffect, } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user,isLoading } = useAuth();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  
 
   useEffect(() => {
-    if (!user) {
-      router.push('/login'); // Redirect only after hydration
-    } else {
-      setIsLoading(false);
+    if (!isLoading && !user) {
+      router.push('/login'); // Redirect only after initialization is complete
     }
-  }, [user, router]);
+  }, [user, isLoading, router]);
 
-  if (!user || isLoading) return null; // Prevents mismatched HTML
+  if (isLoading) {
+    return <div>Loading...</div>; // Show a loading indicator
+  }
+
+  if (!user) {
+    return null; // Prevents mismatched HTML
+  }
 
   return <>{children}</>;
 }

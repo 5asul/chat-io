@@ -3,8 +3,10 @@
 import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { User } from "../models/User";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 interface AuthContextType {
+  isLoading: boolean;
   logError: string | null;
   user: User | null;
   token: string | null;
@@ -19,14 +21,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [logError, setLogError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // Track initialization state
 
   const router = useRouter();
 
   // Use useEffect to initialize state from localStorage after the component mounts
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("user");
-      const storedToken = localStorage.getItem("token");
+      const storedUser = Cookies.get("user");
+      const storedToken = Cookies.get("token");
 
       if (storedUser && storedToken) {
         try {
@@ -35,10 +38,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setToken(storedToken);
         } catch (error) {
           console.error("Error parsing user from localStorage:", error);
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
+          Cookies.remove("user");
+          Cookies.remove("token");
         }
       }
+      setIsLoading(false); 
     }
   }, []); // Empty dependency array ensures this runs only once after mount
 
@@ -58,8 +62,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { user, token } = data.data;
         setUser(user);
         setToken(token);
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("token", token);
+        Cookies.set("user", JSON.stringify(user),{expires:7});
+        Cookies.set("token", token,{expires:7});
         setLogError(null); // Clear any previous errors
       } else {
         setLogError(data.message || "Login failed");
@@ -96,13 +100,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    Cookies.remove("user");
+    Cookies.remove("token");
     router.push("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ logError, user, token, login, register, logout }}>
+    <AuthContext.Provider value={{ isLoading,logError, user, token, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

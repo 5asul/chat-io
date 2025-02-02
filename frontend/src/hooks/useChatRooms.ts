@@ -6,11 +6,14 @@ import { ChatRoom } from '../models/ChatRoom';
 import { useAuth } from './useAuth';
 import { Message } from '@/models/Message';
 import { User } from '@/models/User';
+import { AllUsers } from '@/models/AllUsers';
+
 
 
 
 
 export const useChatRooms = () => {
+  const [allUsers, setAllUsers] = useState<AllUsers[]>([]);
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
   const[messages,setMessages] = useState<Message[]>([]);
   const[users,setUsers] = useState<User[]>([]);
@@ -115,10 +118,30 @@ const fetchChatRoom = async (id: string) => {
       setIsLoading(false); // Set loading to false
     }
   };
+  const fetchUsers = async () => {
+    try {
+
+      const response = await fetch('/api/chat-room/getUsers',{
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+             'Authorization': `Bearer ${token}`,        },
+      });
+      const result = await response.json(); // Extract the response
+      const allUsers = result.data; // Access the `data` array
+      setAllUsers(allUsers || []); // Fallback to empty array if `data` is undefined
+    } catch (error) {
+      console.error('Error fetching chat rooms:', error);
+      setAllUsers([]); // Set to empty array on error
+    } finally {
+      setIsLoading(false); // Set loading to false
+    }
+  };
   
   useEffect(() => {
     if (token) {
       fetchChatRooms();
+      fetchUsers();
     }
   }, [token]);
 
@@ -154,7 +177,7 @@ const fetchChatRoom = async (id: string) => {
     }
   };
 
-  return { error,deleteChatRoom,isLoading,messages,users,chatRooms, createChatRoom, fetchChatRoom };
+  return { error,deleteChatRoom,isLoading,messages,users,allUsers,chatRooms, createChatRoom, fetchChatRoom };
 };
 
 
