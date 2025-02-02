@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
+      setIsLoading(true); // Show loading spinner while fetching data
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
@@ -65,18 +66,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         Cookies.set("user", JSON.stringify(user),{expires:7});
         Cookies.set("token", token,{expires:7});
         setLogError(null); // Clear any previous errors
+        setIsLoading(false); // Hide loading spinner
       } else {
         setLogError(data.message || "Login failed");
         throw new Error(data.message || "Login failed");
       }
     } catch (err) {
       setLogError((err as Error).message || "Login failed");
+      setIsLoading(false); // Hide loading spinner
       throw err;
     }
   };
 
   const register = async (username: string, email: string, password: string) => {
     try {
+      setIsLoading(true); // Show loading spinner while fetching data
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
@@ -86,10 +90,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       const data = await response.json();
-
+      setIsLoading(false); // Hide loading spinner
       if (!response.ok) {
+
         console.error("Registration failed:", data);
+        setIsLoading(false); // Hide loading spinner
         throw new Error(data.message || "Registration failed");
+        
       }
     } catch (err) {
       setLogError((err as Error).message || "Registration failed");

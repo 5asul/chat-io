@@ -10,7 +10,7 @@ function Register() {
   const[password,setPassword]=useState('')
    const [, setError] = useState<string | null>(null);
   
-  const { register } = useAuth();
+  const { register,logError,isLoading } = useAuth();
   const router = useRouter();
 
  const handleSubmit = async (e: React.FormEvent) => {
@@ -69,11 +69,13 @@ function Register() {
           </div>
           <div className="flex items-center justify-between">
             <button
+            disabled={isLoading}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
-              Register
+              {isLoading ? "Registering..." : "Register"}
             </button>
+            {logError && <div className="text-red-500 text-xs">{logError}</div>}
             <a
               className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
               href="#"
