@@ -1,7 +1,7 @@
 "use client"
 
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ChatRoom } from '../models/ChatRoom';
 import { useAuth } from './useAuth';
 import { Message } from '@/models/Message';
@@ -99,7 +99,7 @@ const fetchChatRoom = async (id: string) => {
   }
 };
 
-  const fetchChatRooms = async () => {
+  const fetchChatRooms = useCallback(async () => {
     try {
       setIsLoading(true); // Set loading to true
 
@@ -118,8 +118,9 @@ const fetchChatRoom = async (id: string) => {
     } finally {
       setIsLoading(false); // Set loading to false
     }
-  };
-  const fetchUsers = async () => {
+  },[token])
+
+  const fetchUsers = useCallback(async () => {
     try {
 
       const response = await fetch('/api/chat-room/getUsers',{
@@ -137,14 +138,14 @@ const fetchChatRoom = async (id: string) => {
     } finally {
       setIsLoading(false); // Set loading to false
     }
-  };
+  },[token])
   
   useEffect(() => {
     if (token) {
       fetchChatRooms();
       fetchUsers();
     }
-  }, [token]);
+  }, [token,fetchChatRooms,fetchUsers]);
 
   const deleteChatRoom = async (id: string) => {
     setIsLoading(true);

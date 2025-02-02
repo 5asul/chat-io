@@ -1,9 +1,12 @@
 // src/app/api/chat-rooms/[id]/route.ts
-import { NextResponse } from 'next/server';
+import { NextResponse,NextRequest } from 'next/server';
 import { ENDPOINTS } from '@/constants/endpoints';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const { id } = await params;
+export async function GET(
+  request: NextRequest,
+  {params}: { params: Promise<{ id: string }> } // Correct type for context
+):Promise<NextResponse> {
+  const { id } = await params; // Destructure params directly (no `await`)
   const authHeader = request.headers.get('Authorization');
 
   if (!authHeader) {
@@ -11,19 +14,16 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    // Simulate a call to your backend
-    const response = await fetch(`${ENDPOINTS.CHAT_ROOMS}/${id}`,{
+    const response = await fetch(`${ENDPOINTS.CHAT_ROOMS}/${id}`, {
       method: 'GET',
-      headers: { 
-        'Content-Type': 'application/json' ,
-        'Authorization': authHeader, // Forward the Authorization header
-  
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader,
       },
-    }
-    );
+    });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch chat room');
+      throw new Error(`Failed to fetch chat room: ${response.status}`);
     }
 
     const data = await response.json();
@@ -33,4 +33,3 @@ export async function GET(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: 'Chat room not found' }, { status: 404 });
   }
 }
-

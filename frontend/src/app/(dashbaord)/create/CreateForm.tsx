@@ -1,40 +1,53 @@
 "use client";
 
-import React, { useState } from 'react';
-import {useChatRooms} from '@/hooks/useChatRooms';
+import React, { useState } from "react";
+import { useChatRooms } from "@/hooks/useChatRooms";
 
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 const CreateForm = () => {
-  const [roomName, setRoomName] = useState('');
+  const [roomName, setRoomName] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-  const { createChatRoom } = useChatRooms();
-  const {user}=useAuth();
-  const { allUsers } = useChatRooms();
+  const { createChatRoom, allUsers } = useChatRooms();
+  const { user } = useAuth();
   const router = useRouter();
 
-  // Replace this with actual user fetching logic
-  
-
-    
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createChatRoom(roomName, selectedUsers); // '1' هو ID المستخدم (يمكن استبداله بـ user.id من الـ AuthContext)
-      router.push('/chat-room');
+      await createChatRoom(roomName, selectedUsers);
+      router.push("/chat-room");
     } catch (error) {
       console.error(error);
     }
   };
 
- 
+  const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const options = e.target.options;
+    const selected: number[] = [];
+    selected.push(user!.id);
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        selected.push(Number(options[i].value));
+      }
+    }
+    setSelectedUsers(selected);
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">Create a New Room</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg"
+    >
+      <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
+        Create a New Room
+      </h2>
       <div className="mb-6">
-        <label htmlFor="roomName" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="roomName"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Room Name
         </label>
         <input
@@ -47,23 +60,24 @@ const CreateForm = () => {
         />
       </div>
       <div className="mb-6">
-        <label htmlFor="users" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="users"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Add Users
         </label>
         <select
           id="users"
           multiple
           value={selectedUsers.map(String)}
-          onChange={(e) => setSelectedUsers(Array.from(e.target.selectedOptions, option => Number(option.value)+Number(user?.id)))}
+          onChange={handleUserChange}
           className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         >
-          
-           {allUsers.map((user) => (
+          {allUsers.map((user) => (
             <option key={user.id} value={user.id}>
               {user.username}
             </option>
-           ))}
-          
+          ))}
         </select>
       </div>
       <button
@@ -77,5 +91,3 @@ const CreateForm = () => {
 };
 
 export default CreateForm;
-
-
