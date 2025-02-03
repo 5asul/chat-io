@@ -1,6 +1,6 @@
 // src/components/constants/endpoints.ts
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://chat-io-backend.vercel.app';
 
 export const ENDPOINTS = {
   
