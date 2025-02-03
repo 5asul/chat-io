@@ -7,7 +7,7 @@ import chatRoomRoutes from './routes/chatRoomRoutes';
 
 const app = express();
 
-app.use(cors({ origin: process.env.NEXT_PUBLIC_FRONTEND_URL }));
+app.use(cors({ origin: process.env.NEXT_PUBLIC_FRONTEND_URL && "https://ahmed-chat-io.vercel.app" }));
 app.use(express.json());
 
 app.use('/api/auth', userRoutes);
