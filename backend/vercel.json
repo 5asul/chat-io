@@ -13,13 +13,7 @@
         }
       }
     ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "api/index.ts",
-        "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"]
-      }
-    ],
+  
     "functions": {
       "api/index.ts": {
         "memory": 3008,
