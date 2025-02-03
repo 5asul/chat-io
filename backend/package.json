@@ -1,10 +1,11 @@
 {
   "name": "chat-io-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon "
+    "start": "npx nodemon ",
+    "vercel-build": "npm run build"
   },
   "keywords": [],
   "author": "",
