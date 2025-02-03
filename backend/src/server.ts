@@ -1,6 +1,13 @@
+import serverless from 'serverless-http';
 import app from './app';
 import { PORT } from './config/env';
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Local development server
+if (process.env.NODE_ENV === 'development') {
+  app.listen(PORT, () => {
+    console.log(`Local server running on port ${PORT}`);
+  });
+}
+
+// Vercel serverless handler
+export const handler = serverless(app);
