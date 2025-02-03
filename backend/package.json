@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm install --production=false && npm run vercel-build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx nodemon",
-    "vercel-build": "npm install && prisma generate && tsc",
+    "vercel-build": "prisma migrate deploy && tsc --noEmit",
+    "type-check": "tsc --noEmit",
     "postinstall": "prisma generate"
   },
   "keywords": [],
@@ -19,6 +20,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
     "prisma": "^6.2.1",
