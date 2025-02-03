@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "dev":"NODE_ENV=development nodemon src/server.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production node dist/server.js",
-    "vercel-build": "npm install && npm run build && prisma generate"
+    "start": "npx nodemon",
+    "vercel-build": "npm install && prisma generate && tsc",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +24,8 @@
     "prisma": "^6.2.1",
     "serverless-http": "^3.2.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vercel": "^40.1.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

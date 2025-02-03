@@ -6,7 +6,7 @@ import chatRoomRoutes from './routes/chatRoomRoutes';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: process.env.NEXT_PUBLIC_FRONTEND_URL }));
 app.use(express.json());
 
 app.use('/api/auth', userRoutes);
