@@ -1,10 +1,11 @@
 // src/components/constants/endpoints.ts
 
-const baseUrl = "http://localhost:4000"
+const BASE_URL = process.env.BASE_URL || 'http://localhost:4000';
+
 export const ENDPOINTS = {
   
-    LOGIN: `${baseUrl}/api/auth/login`,
-    REGISTER: `${baseUrl}/api/auth/register`,
-    CHAT_ROOMS: `${baseUrl}/api/chat-rooms`,
-    MESSAGES: `${baseUrl}/api/messages`,
+    LOGIN: `${BASE_URL}/api/auth/login`,
+    REGISTER: `${BASE_URL}/api/auth/register`,
+    CHAT_ROOMS: `${BASE_URL}/api/chat-rooms`,
+    MESSAGES: `${BASE_URL}/api/messages`,
   };
