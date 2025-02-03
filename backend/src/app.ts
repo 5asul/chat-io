@@ -7,7 +7,10 @@ import chatRoomRoutes from './routes/chatRoomRoutes';
 
 const app = express();
 
-app.use(cors({ origin: "https://ahmed-chat-io.vercel.app"}));
+app.use(cors({ origin: "https://ahmed-chat-io.vercel.app",
+    optionsSuccessStatus: 200 ,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+}));
 app.use(express.json());
 
 app.use('/api/auth', userRoutes);
