@@ -1,11 +1,32 @@
 import { PrismaClient } from '@prisma/client';
 
-declare global {
-  var prisma: PrismaClient | undefined;
+class PrismaConnection {
+  private static instance: PrismaClient;
+  private static connectionCount = 0;
+
+  public static getInstance(): PrismaClient {
+    if (!PrismaConnection.instance) {
+      PrismaConnection.instance = new PrismaClient({
+        log: [
+          { level: 'warn', emit: 'event' },
+          { level: 'error', emit: 'event' }
+        ],
+        datasourceUrl: process.env.DATABASE_URL
+      });
+
+      // Add connection monitoring
+      PrismaConnection.instance.$on('query' as never, (e: any) => {
+        if (e.duration > 2000) {
+          console.warn('Slow query detected:', e.query, e.duration + 'ms');
+        }
+      });
+    }
+
+    PrismaConnection.connectionCount++;
+    console.log(`Active connections: ${PrismaConnection.connectionCount}`);
+    
+    return PrismaConnection.instance;
+  }
 }
 
-const prisma = global.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
-
-export default prisma;
+export default PrismaConnection.getInstance();
