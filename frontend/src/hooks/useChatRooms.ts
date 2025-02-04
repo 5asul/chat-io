@@ -169,6 +169,7 @@ const fetchChatRoom = async (id: string) => {
       if (!response.ok) {
         throw new Error(result.error || 'Failed to delete chat room');
       }
+      await fetchChatRooms();
 
       return result; // Return the result for further handling
     } catch (error) {

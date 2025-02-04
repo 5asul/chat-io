@@ -4,15 +4,20 @@ import Link from 'next/link';
 import { useChatRooms } from '@/hooks/useChatRooms';
 import { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+
 
 const RoomList = () => {
   const { chatRooms, isLoading, deleteChatRoom } = useChatRooms();
   const [deleting, setDeleting] = useState<number | null>(null);
+  const router = useRouter();
 
   const handleDelete = async (roomId: number) => {
     setDeleting(roomId);
     try {
       await deleteChatRoom(String(roomId));
+      router.refresh();
+      
     } catch (error) {
       console.error('Error deleting chat room:', error);
     } finally {
