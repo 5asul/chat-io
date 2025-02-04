@@ -35,7 +35,7 @@ model Message {
   senderId  Int      // Foreign key to User
   sender    User     @relation(fields: [senderId], references: [id])
   roomId    Int      // Foreign key to ChatRoom
-  room      ChatRoom @relation(fields: [roomId], references: [id])
+  room      ChatRoom @relation(fields: [roomId], references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
