@@ -6,11 +6,16 @@ import messageRoutes from './routes/messageRoutes';
 import chatRoomRoutes from './routes/chatRoomRoutes';
 
 const app = express();
-
+const corsOptions = {
+    origin: 'https://ahmed-chat-io.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  };
   
 // Remove manual CORS middleware completely
-app.use(cors());
-
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Keep preflight
 
 app.use(express.json());
 
