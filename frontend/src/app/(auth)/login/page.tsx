@@ -7,7 +7,7 @@ import React, { useState } from "react";
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { login, logError, isLoading } = useAuth();
   const router = useRouter();
 
@@ -69,7 +69,7 @@ const LoginForm = () => {
       >
         {isLoading ? "Loading..." : "Login"}
       </button>
-      {logError && <div className="text-red-500 text-xs">{logError}</div>}
+      {error && <div className="text-red-500 text-xs">{logError}</div>}
     </form>
   );
 };
